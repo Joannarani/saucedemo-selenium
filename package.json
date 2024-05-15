@@ -1,0 +1,17 @@
+{
+  "name": "saucedemo-selenium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^10.4.0"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.20.0"
+  }
+}

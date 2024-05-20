@@ -1,10 +1,14 @@
-const { By, Builder, WebElementCondition, until } = require('selenium-webdriver');
+const { By, Builder } = require('selenium-webdriver');
 
-class LoginPage{
+class ProductsPage{
   
   driver;
-  constructor(){
-    this.driver = new Builder().forBrowser('chrome').build();
+  constructor({driver} = {}){
+    this.driver = driver || new Builder().forBrowser('chrome').build();
+  }
+
+  getDriver(){
+    return this.driver;
   }
 
   async open(){
@@ -14,49 +18,35 @@ class LoginPage{
   async quit(){
     await this.driver.quit();
   }
-
-  txtUsername() {
-    return this.driver.findElement(By.xpath('//input[@data-test="username"]'));
-  } 
-
-  txtPassword() {
-    return this.driver.findElement(By.xpath('//input[@data-test="password"]'));
-  } 
-
-  btnSubmit(){
-    return this.driver.findElement(By.xpath('//input[@data-test="login-button"]'));
+  
+  txtCartNumber(){
+    return this.driver.findElement(By.xpath('//span[@data-test="shopping-cart-badge"]')).getText();
+  }
+  
+  txtProductsName(){
+    return this.driver.findElement(By.xpath('//div[@data-test="inventory-item-name"]')).getText();
   }
 
-  txtError(){
-    return this.driver.findElement(By.xpath('//h3[@data-test="error"]')).getText();
+  clickAddCartProduct(value){
+    return this.driver.findElement(By.xpath(`//button[@data-test="add-to-cart-${value}"]`)).click();
   }
 
-  txtProducts(){
-    return this.driver.findElement(By.xpath('//span[@data-test="title"]')).getText();
+  clickBackProducts(){
+    return this.driver.findElement(By.xpath('//button[@data-test="back-to-products"]')).click();
   }
 
-  //action
-
-  typeCorrectUsername(){
-    return this.txtUsername().sendKeys("standard_user");
+  clickImgProducts(index){
+    return this.driver.findElement(By.xpath(`//a[@data-test="item-${index}-img-link"]`)).click();
   }
 
-  typeIncorrectUsername(){
-    return this.txtUsername().sendKeys("user");
+  clickRemoveProduct(value){
+    return this.driver.findElement(By.xpath(`//button[@data-test="remove-${value}"]`)).click();
   }
 
-  typeCorrectPassword(){
-    return this.txtPassword().sendKeys("secret_sauce");
-  }
-
-  typeIncorrectPassword(){
-    return this.txtPassword().sendKeys("123");
-  }
-
-  clickSubmit(){
-    return this.btnSubmit().click();
+  clickTitleProducts(index){
+    return this.driver.findElement(By.xpath(`//a[@data-test="item-${index}-title-link"]`)).click();
   }
 
 }
 
-module.exports = LoginPage;
+module.exports = ProductsPage;

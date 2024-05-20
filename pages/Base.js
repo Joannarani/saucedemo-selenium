@@ -1,6 +1,6 @@
-const { By, Builder } = require('selenium-webdriver');
+const { By, Builder, WebElementCondition, until } = require('selenium-webdriver');
 
-class LoginPage{
+class Base{
 
   driver;
   constructor({driver} = {}){
@@ -19,12 +19,18 @@ class LoginPage{
     await this.driver.quit();
   }
 
+  //element
+
   txtUsername() {
     return this.driver.findElement(By.xpath('//input[@data-test="username"]'));
   } 
 
   txtPassword() {
     return this.driver.findElement(By.xpath('//input[@data-test="password"]'));
+  } 
+
+  btnSubmit(){
+    return this.driver.findElement(By.xpath('//input[@data-test="login-button"]'));
   }
 
   txtError(){
@@ -54,9 +60,18 @@ class LoginPage{
   }
 
   clickSubmit(){
-    return this.driver.findElement(By.xpath('//input[@data-test="login-button"]')).click();
+    return this.btnSubmit().click();
+  }
+
+  //command
+
+  async successLogin(){
+    await this.typeCorrectUsername();
+    await this.typeCorrectPassword();
+    await this.btnSubmit().click();
+    return;
   }
 
 }
 
-module.exports = LoginPage;
+module.exports = Base;

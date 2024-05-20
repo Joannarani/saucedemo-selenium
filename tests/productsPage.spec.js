@@ -1,27 +1,85 @@
 const assert = require('assert');
-const LoginPage = require('../pages/LoginPage');
+const Base = require('../pages/base');
+const ProductsPage = require('../pages/ProductsPage');
 
-describe('Login', function () {
+describe('Products Page', function () {
     this.timeout(10000);
+    const cart = [
+        "sauce-labs-backpack",
+        "sauce-labs-bike-light",
+        "sauce-labs-bolt-t-shirt",
+        "sauce-labs-fleece-jacket",
+        "sauce-labs-onesie",
+        "test.allthethings()-t-shirt-(red)"
+    ];
+    const productsName = [
+        "Sauce Labs Bike Light",
+        "Sauce Labs Bolt T-Shirt",
+        "Sauce Labs Onesie",
+        "Test.allTheThings() T-Shirt (Red)",
+        "Sauce Labs Backpack",
+        "Sauce Labs Fleece Jacket"
+    ];
 
-    it('Success Login', async () => {
-        const loginPage = new LoginPage();
-        await loginPage.open();
-        await loginPage.typeCorrectUsername();
-        await loginPage.typeCorrectPassword();
-        await loginPage.clickSubmit();
-        assert.equal(await loginPage.txtProducts(), 'Products');
-        await loginPage.quit();
+    it('Success Click Image', async () => {
+        const base = new Base();
+        await base.open();
+        await base.successLogin();
+        const driver = base.getDriver();
+        const productsPage = new ProductsPage({driver});
+        await productsPage.open();
+        for(i=0; i<6; i++){
+            await productsPage.clickImgProducts(i);
+            assert.equal(await productsPage.txtProductsName(),productsName[i]);
+            await productsPage.clickBackProducts();
+        }
+        await productsPage.quit();
     });
 
-    it('Login with Incorrect Username', async () => {
-        const loginPage = new LoginPage();
-        await loginPage.open();
-        await loginPage.typeIncorrectUsername();
-        await loginPage.typeCorrectPassword();
-        await loginPage.clickSubmit();
-        assert.equal(await loginPage.txtError(), 'Epic sadface: Username and password do not match any user in this service');
-        await loginPage.quit();
+    it('Success Click Title', async () => {
+        const base = new Base();
+        await base.open();
+        await base.successLogin();
+        const driver = base.getDriver();
+        const productsPage = new ProductsPage({driver});
+        await productsPage.open();
+        for(i=0; i<6; i++){
+            await productsPage.clickTitleProducts(i);
+            assert.equal(await productsPage.txtProductsName(),productsName[i]);
+            await productsPage.clickBackProducts();
+        }
+        await productsPage.quit();
+    });
+
+    it('Click Add to Cart', async () => {
+        const base = new Base();
+        await base.open();
+        await base.successLogin();
+        const driver = base.getDriver();
+        const productsPage = new ProductsPage({driver});
+        await productsPage.open();
+        for(i=0; i<6; i++){
+            await productsPage.clickAddCartProduct(cart[i]);
+            assert.equal(await productsPage.txtCartNumber(),i+1);
+        }
+        await productsPage.quit();
+    });
+
+    it('Click Remove', async () => {
+        const base = new Base();
+        await base.open();
+        await base.successLogin();
+        const driver = base.getDriver();
+        const productsPage = new ProductsPage({driver});
+        await productsPage.open();
+        for(i=0; i<6; i++){
+            await productsPage.clickAddCartProduct(cart[i]);
+        }
+        for(i=0; i<5; i++){
+            await productsPage.clickRemoveProduct(cart[i]);
+            assert.equal(await productsPage.txtCartNumber(),5-i);
+        }
+        await productsPage.quit();
     });
 
 });
